@@ -1,15 +1,29 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions, Platform } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Platform, TextInput, StatusBar } from 'react-native';
 
 const {height, width}=Dimensions.get("window");
 
-export default function App() {
+export default function App(){
+  state={
+    newToDo: ""
+  };
+  const {newToDo}=this.state;
+  _controlNewToDo=text=>{
+    this.setState({
+      newToDo: text
+    });
+  };
   return (
     <View style={styles.container}>
-      <statusbar barStyle="light-content"/>
+      <StatusBar barStyle="light-content"/>
       <Text style={styles.title}>To Do</Text>
       <View style={styles.card}>
-        <TextInput style={styles.input} placeholder={"New To Do"} />
+        <TextInput
+          style={styles.input} 
+          placeholder={"New To Do"} 
+          value={newToDo}
+          onChangeText={this._controlNewToDo}
+          placeholderTextColor={"#999"}/>
       </View>
     </View>
   );
@@ -50,4 +64,10 @@ const styles = StyleSheet.create({
       }
     })
   },
+  input: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#bbb",
+    fontSize: 25,
+  }
 });
