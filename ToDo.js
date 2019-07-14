@@ -27,7 +27,7 @@ export default class ToDo extends Component{
                 </View>
                 {isEditing?(
                     <View style={styles.action}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPressOut={this._finishEditing}>
                             <View style={styles.actionContainer}>
                                 <Text style={styles.actionText}>✅</Text>
                             </View>
@@ -61,6 +61,13 @@ export default class ToDo extends Component{
         this.setState(prevState=>{
             return{
                 isEditing: true
+            }
+        })
+    };
+    _finishEditing=()=>{
+        this.setState(prevState=>{
+            return{
+                isEditing: false
             }
         })
     };
