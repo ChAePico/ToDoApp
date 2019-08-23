@@ -14,14 +14,17 @@ export default class ToDo extends Component{
         isCompleted: PropTypes.bool.isRequired,
         deleteToDo: PropTypes.func.isRequired,
         id: PropTypes.string.isRequired,
+        uncompletedToDo: PropTypes.func.isRequired,
+        completedToDo: PropTypes.func.isRequired,
+        updateToDo: PropTypes.func.isRequired,
     }
     state={
         isEditing: false,
         toDoValue: "",
     };
     render(){
-        const {isCompleted, isEditing, toDoValue}=this.state;
-        const {text, id, deleteToDo}=this.props;
+        const {isEditing, toDoValue}=this.state;
+        const {text, id, deleteToDo, isCompleted}=this.props;
         return(
             <View style={styles.container}>
                 <View style={styles.column}>
@@ -35,7 +38,7 @@ export default class ToDo extends Component{
                         style={[
                             styles.text,
                             styles.input, 
-                            isCompleted?styles.completedCircle:styles.uncompletedCircle
+                            isCompleted?styles.completedText:styles.uncompletedText,
                         ]} 
                         value={toDoValue}
                         multiline={true}
@@ -44,8 +47,8 @@ export default class ToDo extends Component{
                         onBlur={this._finishEditing}
                         />:<Text
                         style={[
-                            styles.circle,
-                            isCompleted?styles.completedCircle:styles.uncompletedCircle,
+                            styles.text,
+                            isCompleted?styles.completedText:styles.uncompletedText,
                         ]}
                         >
                             {text}
@@ -77,21 +80,22 @@ export default class ToDo extends Component{
         );
     };
     _toggleComplete=()=>{
-        this.setState(prevState=>{
-            return{
-                isCompleted: !prevState.isCompleted
-            };
-        });
+        const {isCompleted, uncompletedToDo, completedToDo, id}=this.props;
+        if(isCompleted){
+            uncompletedToDo(id);
+        }
+        else{
+            completedToDo(id);
+        }
     };
     _startEditing=()=>{
         this.setState({isEditing: true})
     };
     _finishEditing=()=>{
-        this.setState(prevState=>{
-            return{
-                isEditing: false
-            }
-        })
+        const {toDoValue}=this.state;
+        const {id, updateToDo}=this.props;
+        updateToDo(id, toDoValue);
+        this.setState({isEditing: false});
     };
     _controlInput=(text)=>{
         this.setState({toDoValue: text});
@@ -146,8 +150,7 @@ const styles=StyleSheet.create({
         marginHorizontal: 10,
     },
     input: {
-        marginVertical: 10,
+        marginVertical: 20,
         width: width/2,
-
     },
 });

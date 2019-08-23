@@ -10,12 +10,13 @@ export default class App extends React.Component{
   state={
     newToDo: "",
     loadedToDos: false,
+    toDos: {},
   };
   componentDidMount=()=>{
     this._loadToDos();
   }
   render(){
-    const {newToDo, loadedToDos}=this.state;
+    const {newToDo, loadedToDos, toDos}=this.state;
     if(!loadedToDos){
       return <AppLoading />;
     }
@@ -36,7 +37,13 @@ export default class App extends React.Component{
           />
           <ScrollView contentContainerStyle={styles.toDos}>
             {Object.values(toDos).map(toDo=>
-              <ToDo key={toDo.id} {...toDo} delete={this._deleteToDo}/>
+              <ToDo 
+                key={toDo.id}
+                deleteToDo={this._deleteToDo}
+                uncompletedToDo={this._uncompletedToDo}
+                completedToDo={this._completedToDo}
+                updateToDo={this._updateToDo}
+                {...toDo}/>
             )}
           </ScrollView>
         </View>
@@ -85,6 +92,51 @@ export default class App extends React.Component{
       const newState={
         ...prevState,
         ...toDos
+      }
+      return {...newState};
+    })
+  };
+  _uncompletedToDo=(id)=>{
+    this.setState(prevState=>{
+      const newState={
+        ...prevState,
+        toDos: {
+          ...prevState.toDos,
+          [id]: {
+            ...prevState.toDos[id],
+            isCompleted: false,
+          }
+        }
+      }
+      return {...newState};
+    })
+  };
+  _completedToDo=(id)=>{
+    this.setState(prevState=>{
+      const newState={
+        ...prevState,
+        toDos: {
+          ...prevState.toDos,
+          [id]: {
+            ...prevState.toDos[id],
+            isCompleted: true,
+          }
+        }
+      }
+      return {...newState};
+    })
+  };
+  _updateToDo=(id, text)=>{
+    this.setState(prevState=>{
+      const newState={
+        ...prevState,
+        toDos: {
+          ...prevState.toDos,
+          [id]: {
+            ...prevState.toDos[id],
+            text: text,
+          }
+        }
       }
       return {...newState};
     })
